@@ -1,4 +1,5 @@
 import { useState } from "react";
+import FeedbackForm from "../Components/FeedbackForm";
 
 function ModalDetalle({ historia, onClose }) {
   const [formData, setFormData] = useState({
@@ -11,17 +12,16 @@ function ModalDetalle({ historia, onClose }) {
     direccion: historia.direccion || "",
     telefono: historia.telefono || "",
     observaciones: historia.observaciones || "",
-    fechaAnalisis: historia.fechaAnalisis || "",
     eps: historia.eps || "",
   });
 
-  const [errors, setErrors] = useState({}); // Estado para errores
+  const [errors, setErrors] = useState({});
+  const [modalFeedback, setModalFeedback] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Limpiar el error si se llena el campo
     if (value.trim() !== "") {
       setErrors((prev) => ({ ...prev, [name]: false }));
     }
@@ -35,7 +35,7 @@ function ModalDetalle({ historia, onClose }) {
       }
     });
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // Devuelve true si no hay errores
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleGuardar = async () => {
@@ -55,7 +55,6 @@ function ModalDetalle({ historia, onClose }) {
         direccion: formData.direccion,
         telefono: formData.telefono,
         observaciones: formData.observaciones,
-        fechaAnalisis: new Date(formData.fechaAnalisis).toISOString(),
         eps: formData.eps,
       };
 
@@ -113,6 +112,7 @@ function ModalDetalle({ historia, onClose }) {
                 onChange={handleChange}
                 placeholder="ID"
                 className={inputClass("id")}
+                disabled={true}
               />
               <input
                 type="text"
@@ -212,32 +212,43 @@ function ModalDetalle({ historia, onClose }) {
               placeholder="Notas adicionales"
               className={inputClass("observaciones")}
             />
-            <input
-              type="date"
-              name="fechaAnalisis"
-              value={formData.fechaAnalisis}
-              onChange={handleChange}
-              className={`${inputClass("fechaAnalisis")} mt-2`}
-            />
           </div>
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t bg-gray-50 flex justify-end gap-2">
+        <div className="p-4 border-t bg-gray-50 flex justify-between items-center">
           <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+            onClick={() => setModalFeedback(true)}
+            className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
           >
-            Cerrar
+            Dar Feedback
           </button>
-          <button
-            onClick={handleGuardar}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Guardar Cambios
-          </button>
+
+          <div className="flex gap-2">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+            >
+              Cerrar
+            </button>
+            <button
+              onClick={handleGuardar}
+              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+            >
+              Guardar Cambios
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Modal de feedback */}
+      {modalFeedback && (
+        <FeedbackForm
+          textoOriginal={JSON.stringify(formData, null, 2)}
+          predicciones={formData}
+          onClose={() => setModalFeedback(false)}
+        />
+      )}
     </div>
   );
 }
