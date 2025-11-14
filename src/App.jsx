@@ -159,15 +159,20 @@ function App() {
                 {graf.label}
               </p>
               <ResponsiveContainer width="100%" height="90%">
-                <LineChart data={data}>
+                <LineChart
+                  data={data}
+                  margin={{ top: 10, right: 10, left: 35, bottom: 10 }} // 💡 margen extra para el eje Y
+                >
                   <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
                   <XAxis dataKey="name" tick={{ fontSize: 10 }} />
                   <YAxis
                     domain={[0, graf.key === "tiempo" ? "auto" : 1]}
+                    tick={{ fontSize: 10, dx: -3 }} // 💡 separa un poco los números
                     label={{
                       value: graf.ejeY,
                       angle: -90,
                       position: "insideLeft",
+                      offset: -20, // 💡 empuja la etiqueta más hacia la izquierda
                       style: {
                         textAnchor: "middle",
                         fill: graf.color,
@@ -233,7 +238,10 @@ function App() {
               {graficaSeleccionada.label}
             </h2>
             <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={data}>
+              <LineChart
+                data={data}
+                margin={{ top: 20, right: 20, left: 40, bottom: 10 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
                 <XAxis dataKey="name" />
                 <YAxis
@@ -241,10 +249,12 @@ function App() {
                     0,
                     graficaSeleccionada.key === "tiempo" ? "auto" : 1,
                   ]}
+                  tick={{ fontSize: 11, dx: -3 }}
                   label={{
                     value: graficaSeleccionada.ejeY,
                     angle: -90,
                     position: "insideLeft",
+                    offset: -25,
                     style: {
                       textAnchor: "middle",
                       fill: graficaSeleccionada.color,
@@ -263,6 +273,7 @@ function App() {
                 />
               </LineChart>
             </ResponsiveContainer>
+
             <p className="text-center text-sm text-gray-600 mt-4">
               Esta gráfica muestra la evolución de la métrica{" "}
               <span className="font-semibold text-blue-700">
